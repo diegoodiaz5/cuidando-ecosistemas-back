@@ -1,19 +1,6 @@
-const { createUserWithEmailAndPassword } = require("firebase/auth");
+const { createUserWithEmailAndPassword, signInWithEmailAndPassword } = require("firebase/auth");
 const { auth, db } = require("../Firebase.js")
 const { doc, getDoc, setDoc, getDocs, collection } = require("firebase/firestore");
-
-exports.userlist = async (req, res) => {
-
-
-    const querySnapshot = await getDocs(collection(db, "users"));
-
-    const userlist = [];
-
-    querySnapshot.forEach((doc) => {
-        userlist.push(doc.data());
-    });
-    res.send(userlist);
-}
 
 exports.newUser = async (req, res) => {
     const { username, email, password } = req.body;
@@ -39,12 +26,31 @@ exports.newUser = async (req, res) => {
                     res.send(`New user registered! Username: ${username}`)
                 })
                 .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
                     res.send(error)
                 });
         }
     } catch (e) {
-        console.error("Error adding document: ", e);
+        res.send(e);
     }
+}
+
+exports.loginUser = async (req, res) => {
+    const { email, password } = req.body;
+    await signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            res.send(`User logged! : ${user.email}`)
+        })
+        .catch((error) => {
+            res.send(error);
+        });
+}
+
+exports.userlist = async (req, res) => {
+    const querySnapshot = await getDocs(collection(db, "users"));
+    const userlist = [];
+    querySnapshot.forEach((doc) => {
+        userlist.push(doc.data());
+    });
+    res.send(userlist);
 }
