@@ -1,37 +1,29 @@
 const { createUserWithEmailAndPassword, signInWithEmailAndPassword } = require("firebase/auth");
 const { auth, db } = require("../Firebase.js")
-const { doc, getDoc, setDoc, getDocs, collection } = require("firebase/firestore");
+const { doc, setDoc, getDocs, collection } = require("firebase/firestore");
 
 exports.newUser = async (req, res) => {
     const { username, email, password } = req.body;
-    try {
-        const docRef = doc(db, "users", `${username}`);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            res.send('The username is already registered!');
-        } else {
-            await createUserWithEmailAndPassword(auth, email, password)
-                .then(async () => {
-                    await setDoc(doc(db, "users", `${username}`), {
-                        information: {
-                            username: username,
-                            description: '',
-                            photo: '',
-                            posts: 0,
-                            comments: 0,
-                            followers: 0,
-                            following: 0
-                        }
-                    });
-                    res.send(`New user registered! Username: ${username}`)
-                })
-                .catch((error) => {
-                    res.send(error)
-                });
-        }
-    } catch (e) {
-        res.send(e);
-    }
+    await createUserWithEmailAndPassword(auth, email, password)
+        .then(async (userCredential) => {
+            const user = userCredential.user;
+            await setDoc(doc(db, "users", `${user.uid}`), {
+                information: {
+                    username: username,
+                    description: '',
+                    photo: '',
+                    posts: 0,
+                    comments: 0,
+                    followers: 0,
+                    following: 0
+                },
+                plants: []
+            });
+            res.status(201).send({ user })
+        })
+        .catch((error) => {
+            res.send(error)
+        });
 }
 
 exports.loginUser = async (req, res) => {
