@@ -1,6 +1,5 @@
 const { db } = require("../Firebase.js")
-const { doc, updateDoc, arrayUnion } = require("firebase/firestore");
-const { getAuth, onAuthStateChanged } = require("firebase/auth");
+const { getDoc, doc, updateDoc, arrayUnion } = require("firebase/firestore");
 
 exports.newPlant = async (req, res) => {
     const { name, image, health, information, recomendation, uid } = req.body;
@@ -22,12 +21,13 @@ exports.newPlant = async (req, res) => {
 }
 
 exports.myPlants = async (req, res) => {
-    const auth = getAuth();
+    const { uid } = req.body;
     const plants = [];
-    onAuthStateChanged(auth, (user) => {
-        const uid = useruid;
-        const userRef = doc(db, 'users', `${uid}`);
-
+    const userRef = doc(db, 'users', `${uid}`);
+    const userSnap = await getDoc(userRef);
+    const data = userSnap.data().plants;
+    data.forEach(element => {
+        plants.push(element);
     });
-    res.send({ plant: "plant!" })
+    res.send(plants);
 }
