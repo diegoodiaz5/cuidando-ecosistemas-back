@@ -1,10 +1,11 @@
 const express = require('express')
 const router = express.Router();
 
-const { userlist, newUser, loginUser } = require('../Controllers/Users')
+const { userlist, newUser, loginUser, userById } = require('../Controllers/Users')
 
 // GET
 router.get('/', userlist);
+router.get('/userId/:uid', userById)
 
 // POST
 router.post('/register', newUser);

@@ -1,6 +1,6 @@
 const { createUserWithEmailAndPassword, signInWithEmailAndPassword } = require("firebase/auth");
 const { auth, db } = require("../Firebase.js")
-const { doc, setDoc, getDocs, collection } = require("firebase/firestore");
+const { doc, setDoc, getDoc, getDocs, collection } = require("firebase/firestore");
 
 exports.newUser = async (req, res) => {
     const { username, email, password } = req.body;
@@ -45,4 +45,16 @@ exports.userlist = async (req, res) => {
         userlist.push(doc.data());
     });
     res.send(userlist);
+}
+
+exports.userById = async (req, res) => {
+    const { uid } = req.params;
+    try {
+        const userRef = doc(db, "users", `${uid}`)
+        const userById = await getDoc(userRef);
+        res.send(userById.data());
+    }
+    catch (error) {
+        res.send("Error!");
+    }
 }
