@@ -1,5 +1,5 @@
 const { db } = require("../Firebase.js")
-const { getDoc, doc, updateDoc, arrayUnion } = require("firebase/firestore");
+const { setDoc, getDoc, doc, updateDoc, arrayUnion } = require("firebase/firestore");
 
 exports.newPlant = async (req, res) => {
     const { name, image, health, information, recomendation, uid } = req.body;
@@ -14,6 +14,17 @@ exports.newPlant = async (req, res) => {
                 recomendation: recomendation
             })
         });
+        const postsRef = doc(db, 'posts', 'plants');
+        await updateDoc(postsRef, {
+            plants: arrayUnion({
+                name: name,
+                image: image,
+                health: health,
+                information: information,
+                recomendation: recomendation,
+                author: uid,
+            })
+        })
         res.send(`The plant ${name} was added to the Database!`)
     } catch (error) {
         res.send(error);
