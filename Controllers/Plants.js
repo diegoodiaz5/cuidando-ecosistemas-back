@@ -2,7 +2,7 @@ const { db } = require("../Firebase.js")
 const { setDoc, getDoc, doc, updateDoc, arrayUnion } = require("firebase/firestore");
 
 exports.newPlant = async (req, res) => {
-    const { name, image, health, information, recomendation, uid } = req.body;
+    const { name, image, health, information, recommendation, uid } = req.body;
     try {
         const userRef = doc(db, 'users', `${uid}`);
         await updateDoc(userRef, {
@@ -11,7 +11,7 @@ exports.newPlant = async (req, res) => {
                 image: image,
                 health: health,
                 information: information,
-                recomendation: recomendation
+                recommendation: recommendation
             })
         });
         const postsRef = doc(db, 'posts', 'plants');
@@ -21,7 +21,7 @@ exports.newPlant = async (req, res) => {
                 image: image,
                 health: health,
                 information: information,
-                recomendation: recomendation,
+                recommendation: recommendation,
                 author: uid,
             })
         })
@@ -40,5 +40,17 @@ exports.myPlants = async (req, res) => {
     data.forEach(element => {
         plants.push(element);
     });
+    res.send(plants);
+}
+
+exports.allPlants = async (req, res) => {
+    const plants = [];
+    const plantsRef = doc(db, 'posts', 'plants');
+    const plantsSnap = await getDoc(plantsRef);
+    const data = plantsSnap.data().plants;
+    data.forEach(element => {
+        plants.push(element);
+    })
+    plants.reverse();
     res.send(plants);
 }
