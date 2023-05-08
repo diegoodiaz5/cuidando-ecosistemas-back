@@ -1,7 +1,10 @@
 const express = require('express')
 const router = express.Router();
 
-const { newPlant, myPlants } = require('../Controllers/Plants')
+const { newPlant, myPlants, allPlants } = require('../Controllers/Plants')
+
+// GET
+router.get("/allPlants", allPlants)
 
 // POST
 router.post('/newPlant', newPlant);
