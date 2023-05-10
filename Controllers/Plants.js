@@ -2,7 +2,7 @@ const { db } = require("../Firebase.js")
 const { setDoc, getDoc, doc, updateDoc, arrayUnion } = require("firebase/firestore");
 
 exports.newPlant = async (req, res) => {
-    const { name, image, health, information, recommendation, uid } = req.body;
+    const { name, image, health, information, recommendation, uid, authorUsername, authorPhoto } = req.body;
     try {
         const userRef = doc(db, 'users', `${uid}`);
         await updateDoc(userRef, {
@@ -23,6 +23,8 @@ exports.newPlant = async (req, res) => {
                 information: information,
                 recommendation: recommendation,
                 author: uid,
+                authorUsername: authorUsername,
+                authorPhoto: authorPhoto
             })
         })
         res.send(`The plant ${name} was added to the Database!`)
