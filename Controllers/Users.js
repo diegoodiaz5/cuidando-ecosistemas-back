@@ -3,7 +3,7 @@ const { auth, db } = require("../Firebase.js")
 const { doc, setDoc, getDoc, getDocs, collection } = require("firebase/firestore");
 
 exports.newUser = async (req, res) => {
-    const { username, email, password } = req.body;
+    const { username, email, password, photo } = req.body;
     await createUserWithEmailAndPassword(auth, email, password)
         .then(async (userCredential) => {
             const user = userCredential.user;
@@ -11,7 +11,7 @@ exports.newUser = async (req, res) => {
                 information: {
                     username: username,
                     description: '',
-                    photo: '',
+                    photo: photo,
                     posts: 0,
                     comments: 0,
                     followers: 0,
