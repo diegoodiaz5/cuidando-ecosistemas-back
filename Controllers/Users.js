@@ -3,39 +3,25 @@ const { auth, db } = require("../Firebase.js")
 const { doc, setDoc, getDoc, getDocs, collection } = require("firebase/firestore");
 
 exports.newUser = async (req, res) => {
-    const { username, email, password, photo } = req.body;
-    await createUserWithEmailAndPassword(auth, email, password)
-        .then(async (userCredential) => {
-            const user = userCredential.user;
-            await setDoc(doc(db, "users", `${user.uid}`), {
-                information: {
-                    username: username,
-                    description: '',
-                    photo: photo,
-                    posts: 0,
-                    comments: 0,
-                    followers: 0,
-                    following: 0
-                },
-                plants: []
-            });
-            res.status(201).send({ user })
-        })
-        .catch((error) => {
-            res.send(error)
+    const { username, uid, photo } = req.body;
+    try {
+        await setDoc(doc(db, "users", `${uid}`), {
+            information: {
+                username: username,
+                description: '',
+                photo: photo,
+                posts: 0,
+                comments: 0,
+                followers: 0,
+                following: 0
+            },
+            plants: []
         });
-}
-
-exports.loginUser = async (req, res) => {
-    const { email, password } = req.body;
-    await signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-            res.send(`User logged! : ${user.email}`)
-        })
-        .catch((error) => {
-            res.send(error);
-        });
+        res.sendStatus(statusCode)
+    }
+    catch (error) {
+        res.send(error)
+    };
 }
 
 exports.userlist = async (req, res) => {
