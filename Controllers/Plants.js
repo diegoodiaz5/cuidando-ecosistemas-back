@@ -35,14 +35,10 @@ exports.newPlant = async (req, res) => {
 
 exports.myPlants = async (req, res) => {
     const { uid } = req.body;
-    const plants = [];
     const userRef = doc(db, 'users', `${uid}`);
     const userSnap = await getDoc(userRef);
-    const data = userSnap.data().plants;
-    data.forEach(element => {
-        plants.push(element);
-    });
-    res.send(plants);
+    const data = userSnap.data();
+    res.send(data);
 }
 
 exports.allPlants = async (req, res) => {
