@@ -40,6 +40,6 @@ exports.userById = async (req, res) => {
         res.send(userById.data());
     }
     catch (error) {
-        res.send("Error!");
+        res.send(error);
     }
 }
