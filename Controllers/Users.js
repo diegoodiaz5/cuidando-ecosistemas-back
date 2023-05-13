@@ -1,4 +1,3 @@
-const { createUserWithEmailAndPassword, signInWithEmailAndPassword } = require("firebase/auth");
 const { auth, db } = require("../Firebase.js")
 const { doc, setDoc, getDoc, getDocs, collection } = require("firebase/firestore");
 
